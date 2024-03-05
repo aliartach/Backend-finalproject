@@ -1,43 +1,46 @@
-import mongoose from 'mongoose'
-import Client from '../Models/clientModels.js'
-import Product from '../Models/productModel.js'
-import { Timestamp } from 'mongodb';
+import mongoose from "mongoose";
 
-const orderItemSchema = new mongoose.Schema({
-    product: { type: mongoose.Schema.Types.ObjectId, ref: 'Product' },
-    quantity: { type: Number, required: true },
-    totalPrice: { type: Number, required: true }
-});
+const Schema = mongoose.Schema;
 
-const orderSchema = new mongoose.Schema({
-    totalPrice: {
+
+const orderSchema = new Schema({
+    client_id: 
+        {
+            type: Schema.Types.ObjectId,
+            ref: 'Client'
+        }
+    ,
+    status: {
+        type: String,
+        enum: ['Pending', 'Paid'],
+         default: false
+    },
+   
+    cart: [{
+        product_id: {
+            type: Schema.Types.ObjectId,
+            ref: 'Product'
+        },
+       
+        quantity: {
+            type: Number,
+            required: true,
+            min: 0
+        },
+        price: {
+            type: Number,
+            required: true
+        }
+    }],
+    total_price: {
         type: Number,
         required: true
     },
-    status: {
-        type: String,
-        enum: ["pending", "in progress", "delivered"],
+    createdAt: {
+        type: Date,
+        default: Date.now
     },
-    paymentMethod: {
-        type: String,
-        default: "Cash"
-    },
-    clientID: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Client"
-    },
-    orderedItems: [orderItemSchema]
-}, {timestamps: true} );
 
-orderSchema.pre('find', function (next) {
-    this.populate({
-        path: 'clientID',
-        select: 'email, phonenumber, address'
-    }).populate({
-        path: 'orderedItems.product',
-        select: 'productName description price image quantity weight type details categoryID'
-    });
-    next();
 });
 
 export default mongoose.model('Order', orderSchema)

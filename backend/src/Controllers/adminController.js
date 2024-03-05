@@ -34,7 +34,7 @@ export const getAdmin = async (req, res) => {
 export const register = async (req, res) => {
   const { email, password, confirmPassword } = req.body;
   const hashedPassword = await bcrypt.hash(password, 10); // Here we hash the passsword
-
+    console.log('password is',password , '------confirm password is',confirmPassword)
   try {
     // Here we check if the admin already exists
     const existingAdmin = await Admin.findOne({ email });
@@ -74,7 +74,8 @@ export const login = async (req, res) => {
     }
 
     const token = jwt.sign({ id: admin._id }, secretKey, { expiresIn: '1h' });
-    res.status(200).json({ message: 'Logged in Successfully!', token });
+  res.cookie('token', token, { httpOnly: true }); // Setting the token in a cookie
+  res.status(200).json({ message: 'Logged in Successfully!', token });
 
   } catch (error) {
     console.error(error);
@@ -129,7 +130,7 @@ export const deleteAdmin = async (req, res) => {
       return res.status(404).json({ error: 'Admin not found!' });
     }
 
-    res.status(200).json({ message: 'Admin was deleted successfully!' });
+    res.status(200).json({ message: 'Admin was deleted successfully!', admin });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

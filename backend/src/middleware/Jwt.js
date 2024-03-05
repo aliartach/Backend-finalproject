@@ -1,14 +1,16 @@
-import Jwt from "jsonwebtoken";
+import jwt from "jsonwebtoken";
+import dotenv from 'dotenv'
+dotenv.config();
 
- export const requireAuth = (req, res, next) => {
-  const token = req.cookies.jwt;
+export const RequireAuth = (req, res, next) => {
+  const token = req.cookies.token;
   const secretKey = process.env.JWT_SECRET;
 
   if (!token) {
     return res.redirect('/login');
   }
 
-  Jwt.verify(token, secretKey, (err, decodedToken) => {
+  jwt.verify(token, secretKey, (err, decodedToken) => {
     if (err) {
       console.log(err.message);
       return res.redirect('/login')

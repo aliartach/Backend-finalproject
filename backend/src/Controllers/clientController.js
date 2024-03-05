@@ -16,7 +16,7 @@ export const getClients = async (req, res) => {
       const { id } = req.params;
   
       if (!mongoose.Types.ObjectId.isValid(id)) {
-        return res.status(404).json({ error: 'Admin not found!' });
+        return res.status(404).json({ error: 'Client not found!' });
       }
   
       const client = await Client.findById(id);
@@ -73,13 +73,13 @@ export const getClients = async (req, res) => {
         return res.status(404).json({ error: 'Admin not found!' });
       }
   
-      const admin = await Admin.findByIdAndDelete(id);
+      const client = await Client.findByIdAndDelete(id);
   
-      if (!admin) {
-        return res.status(404).json({ error: 'Admin not found!' });
+      if (!client) {
+        return res.status(404).json({ error: 'Client not found!' });
       }
   
-      res.status(200).json({ message: 'Admin was deleted successfully!' });
+      res.status(200).json({ message: 'Client was deleted successfully!' });
     } catch (error) {
       res.status(500).json({ error: error.message });
     }
@@ -117,7 +117,7 @@ export const getClients = async (req, res) => {
   export const loginClient = async (req, res) => {
     const { email, password } = req.body;
     const secretKey = process.env.JWT_SECRET;
-  
+    
     try {
       if (!secretKey) {
         throw new Error('JWT secret key not configured.');

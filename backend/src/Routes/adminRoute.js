@@ -1,19 +1,17 @@
 import express from 'express';
 import * as Admin from '../Controllers/adminController.js';
-// import { requireAuth } from '../Middlewares/Jwt.js'
-
+import { RequireAuth } from '../middleware/Jwt.js';
 
 const router = express.Router();
 
-// Public routes
 router.post('/register', Admin.register);
-router.post('/login', Admin.login);
+router.post('/login', RequireAuth, Admin.login);
 
 // Protected routes (require authentication)
-// router.use(requireAuth);
-router.get('/', Admin.getAdmins);
-router.get('/:id', Admin.getAdmin);
-router.put('/:id', Admin.updateAdmin);
-router.delete('/:id', Admin.deleteAdmin);
+// router.use(RequireAuth);
+router.get('/', RequireAuth, Admin.getAdmins);
+router.get('/:id', RequireAuth, Admin.getAdmin);
+router.put('/:id', RequireAuth, Admin.updateAdmin);
+router.delete('/:id', RequireAuth, Admin.deleteAdmin);
 
-export default router;
+export default router; 

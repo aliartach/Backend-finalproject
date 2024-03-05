@@ -3,7 +3,8 @@ import Review from '../Models/reviewModel.js'
 
 // Create a review
 export const createReview = async (req, res) => {
-    const { rating, reviewText, clientID, productID } = req.body;
+    const { rating, reviewText } = req.body;
+    const {clientID, productID} = req.user;
     try {
         
         const review = await Review.create({ rating, reviewText, clientID, productID });

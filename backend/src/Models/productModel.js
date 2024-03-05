@@ -1,5 +1,4 @@
 import mongoose from 'mongoose'
-import Category from '../Models/categoryModel.js'
 
 const productSchema = new mongoose.Schema({
     productName: {
@@ -28,15 +27,17 @@ const productSchema = new mongoose.Schema({
     },
     type: {
         type: String,
-        required: true
+        required: true,
+        enum: ['no sugar added', 'dark chocolate', 'frozen', 'yogurt', 'milk chocolate', 'white chocolate', 'caramel']
     },
     details: {
         type: String
     },
     categoryID: {
-        type: mongoose.Schema.Types.ObjectId, ref: "Category"
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Category"
     }
-})
+}, { timestamps: true })
 
 productSchema.pre('find', function (next) {
     this.populate({
@@ -44,6 +45,8 @@ productSchema.pre('find', function (next) {
       select: 'name'
     });
     next();
-  });
+});
 
-export default mongoose.model('Product', productSchema)
+const Product = mongoose.model('Product', productSchema);
+
+export default Product;
